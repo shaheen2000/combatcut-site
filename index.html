@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CombatCut — Make Weight, Every Time</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B0B0C;
+    --panel:#151516;
+    --bone:#EDE8DE;
+    --bone-dim:#9A958A;
+    --crimson:#C8102E;
+    --crimson-dim:#7A0E1F;
+    --gold:#C9A24B;
+    --gold-dim:#7A6228;
+    --line:#2A2A2C;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--bone);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.display{
+    font-family:'Oswald',sans-serif;
+    text-transform:uppercase;
+    letter-spacing:0.02em;
+  }
+  .mono{font-family:'JetBrains Mono',monospace;}
+  a{color:inherit;text-decoration:none;}
+
+  .wrap{max-width:1120px;margin:0 auto;padding:0 28px;}
+
+  /* NAV */
+  nav{
+    position:fixed;top:0;left:0;right:0;
+    z-index:50;
+    background:rgba(11,11,12,0.85);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  nav .wrap{
+    display:flex;align-items:center;justify-content:space-between;
+    height:68px;
+  }
+  .logo{
+    font-family:'Oswald',sans-serif;
+    font-weight:700;font-size:20px;letter-spacing:0.03em;
+    text-transform:uppercase;
+  }
+  .logo span{color:var(--crimson);}
+  .logo-img{height:34px;width:auto;display:block;}
+  footer .logo-img{height:30px;}
+  .nav-links{display:flex;gap:32px;font-size:14px;color:var(--bone-dim);}
+  .nav-links a:hover{color:var(--bone);}
+  .nav-cta{
+    background:var(--crimson);color:var(--bone);
+    padding:10px 20px;font-size:13px;font-weight:600;
+    text-transform:uppercase;letter-spacing:0.04em;
+    border-radius:2px;
+  }
+  @media (max-width:720px){.nav-links{display:none;}}
+
+  /* HERO */
+  header.hero{
+    position:relative;
+    padding:160px 0 100px;
+    border-bottom:1px solid var(--line);
+    overflow:hidden;
+  }
+  header.hero::before{
+    content:"";
+    position:absolute;inset:0;
+    background:
+      linear-gradient(180deg, rgba(200,16,46,0.07), transparent 60%);
+    pointer-events:none;
+  }
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;letter-spacing:0.08em;
+    color:var(--crimson);
+    border:1px solid var(--crimson-dim);
+    padding:6px 12px;border-radius:2px;
+    margin-bottom:28px;
+  }
+  .eyebrow::before{
+    content:"";width:6px;height:6px;border-radius:50%;
+    background:var(--crimson);
+    box-shadow:0 0 0 0 rgba(200,16,46,0.6);
+    animation:pulse 1.8s infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(200,16,46,0.5);}
+    70%{box-shadow:0 0 0 6px rgba(200,16,46,0);}
+    100%{box-shadow:0 0 0 0 rgba(200,16,46,0);}
+  }
+  .hero-grid{
+    display:grid;grid-template-columns:1.15fr 0.85fr;gap:64px;align-items:center;
+  }
+  @media (max-width:880px){.hero-grid{grid-template-columns:1fr;gap:56px;}}
+
+  h1.hero-title{
+    font-size:clamp(40px,6vw,68px);
+    line-height:1.02;
+    font-weight:700;
+    margin-bottom:24px;
+  }
+  h1.hero-title em{
+    font-style:normal;color:var(--crimson);
+  }
+  .hero-sub{
+    font-size:18px;line-height:1.6;color:var(--bone-dim);
+    max-width:480px;margin-bottom:36px;
+  }
+  .hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:20px;}
+  .btn-primary{
+    background:var(--crimson);color:var(--bone);
+    padding:15px 28px;font-weight:600;font-size:14px;
+    text-transform:uppercase;letter-spacing:0.04em;
+    border-radius:2px;
+    transition:transform 0.15s ease, background 0.15s ease;
+    display:inline-block;
+  }
+  .btn-primary:hover{background:#E0142F;transform:translateY(-1px);}
+  .btn-ghost{
+    border:1px solid var(--line);color:var(--bone);
+    padding:15px 28px;font-weight:600;font-size:14px;
+    text-transform:uppercase;letter-spacing:0.04em;
+    border-radius:2px;
+    transition:border-color 0.15s ease;
+  }
+  .btn-ghost:hover{border-color:var(--bone-dim);}
+  .store-note{font-size:13px;color:var(--bone-dim);}
+
+  /* WAITLIST FORM */
+  .waitlist-form{
+    display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;
+  }
+  .waitlist-form input[type="email"]{
+    flex:1;min-width:200px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    color:var(--bone);
+    padding:15px 16px;
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    border-radius:2px;
+    outline:none;
+  }
+  .waitlist-form input[type="email"]::placeholder{color:var(--bone-dim);}
+  .waitlist-form input[type="email"]:focus{border-color:var(--crimson-dim);}
+  .waitlist-form button{
+    background:var(--crimson);color:var(--bone);
+    border:none;cursor:pointer;
+    padding:15px 26px;font-weight:600;font-size:14px;
+    text-transform:uppercase;letter-spacing:0.04em;
+    border-radius:2px;
+    font-family:'Inter',sans-serif;
+    transition:background 0.15s ease;
+  }
+  .waitlist-form button:hover{background:#E0142F;}
+  .waitlist-msg{
+    font-size:13px;color:var(--bone-dim);min-height:18px;
+  }
+  .waitlist-msg.success{color:var(--crimson);}
+
+  /* SCALE DISPLAY - signature element */
+  .scale-card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:32px;
+    position:relative;
+  }
+  .scale-card .scale-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;letter-spacing:0.1em;color:var(--bone-dim);
+    text-transform:uppercase;
+    display:flex;justify-content:space-between;
+    margin-bottom:18px;
+  }
+  .scale-card .scale-label .live{color:var(--crimson);}
+  .unit-toggle{
+    display:inline-flex;border:1px solid var(--line);border-radius:3px;overflow:hidden;
+  }
+  .unit-toggle button{
+    background:transparent;border:none;color:var(--bone-dim);
+    font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
+    padding:5px 11px;cursor:pointer;letter-spacing:0.04em;
+    transition:background 0.15s ease,color 0.15s ease;
+  }
+  .unit-toggle button.active{background:var(--gold);color:var(--ink);}
+  .scale-readout{
+    font-family:'JetBrains Mono',monospace;
+    font-size:clamp(48px,8vw,72px);
+    font-weight:700;
+    line-height:1;
+    display:flex;align-items:baseline;gap:8px;
+    margin-bottom:8px;
+  }
+  .scale-readout .unit{font-size:22px;color:var(--bone-dim);font-weight:500;}
+  .scale-target{
+    font-size:13px;color:var(--bone-dim);margin-bottom:24px;
+  }
+  .scale-target strong{color:var(--bone);}
+  .scale-bar-track{
+    height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-bottom:10px;
+  }
+  .scale-bar-fill{
+    height:100%;background:linear-gradient(90deg,var(--crimson-dim),var(--crimson));
+    width:0%;
+    transition:width 1.4s cubic-bezier(.2,.8,.2,1);
+  }
+  .scale-meta{
+    display:flex;justify-content:space-between;
+    font-size:12px;color:var(--bone-dim);font-family:'JetBrains Mono',monospace;
+  }
+  .scale-countdown{
+    margin-top:24px;padding-top:20px;border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .scale-countdown .label{font-size:12px;color:var(--bone-dim);text-transform:uppercase;letter-spacing:0.06em;}
+  .scale-countdown .days{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--crimson);}
+
+  /* TRUST STRIP */
+  .trust{
+    border-bottom:1px solid var(--line);
+    padding:28px 0;
+    border-top:1px solid var(--gold-dim);
+  }
+  .trust .wrap{
+    display:flex;gap:40px;justify-content:center;flex-wrap:wrap;
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;color:var(--bone-dim);letter-spacing:0.04em;
+  }
+
+  /* SECTIONS */
+  section{padding:110px 0;border-bottom:1px solid var(--line);}
+  .section-head{max-width:600px;margin-bottom:64px;}
+  .section-head .eyebrow{margin-bottom:18px;}
+  .section-head h2{font-size:clamp(28px,4vw,40px);line-height:1.1;font-weight:700;}
+  .section-head p{color:var(--bone-dim);font-size:16px;margin-top:16px;line-height:1.6;}
+
+  /* PROTOCOL TIMELINE (real sequence -> numbered markers justified) */
+  .protocol{
+    display:grid;gap:0;
+  }
+  .protocol-row{
+    display:grid;grid-template-columns:90px 1fr 1fr;gap:32px;
+    padding:32px 0;border-top:1px solid var(--line);
+    align-items:start;
+  }
+  .protocol-row:last-child{border-bottom:1px solid var(--line);}
+  .protocol-num{
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;color:var(--crimson);
+    padding-top:4px;
+  }
+  .protocol-day{
+    font-family:'Oswald',sans-serif;font-weight:600;font-size:18px;
+    text-transform:uppercase;
+  }
+  .protocol-day span{display:block;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--bone-dim);font-weight:500;text-transform:none;margin-top:4px;}
+  .protocol-desc{color:var(--bone-dim);font-size:15px;line-height:1.6;}
+  @media (max-width:720px){
+    .protocol-row{grid-template-columns:50px 1fr;}
+    .protocol-row .protocol-desc{grid-column:2;}
+  }
+
+  /* FEATURES GRID */
+  .features{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  .feature{
+    background:var(--ink);padding:36px 32px;
+  }
+  .feature .ftag{
+    font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--crimson);
+    letter-spacing:0.08em;margin-bottom:16px;display:block;
+  }
+  .feature h3{font-size:19px;font-weight:600;margin-bottom:10px;text-transform:none;letter-spacing:0;}
+  .feature p{color:var(--bone-dim);font-size:14px;line-height:1.6;}
+  @media (max-width:880px){.features{grid-template-columns:1fr;}}
+
+  /* PRICING */
+  .pricing-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+  @media (max-width:720px){.pricing-grid{grid-template-columns:1fr;}}
+  .price-card{
+    border:1px solid var(--line);border-radius:6px;padding:36px;
+    background:var(--panel);
+  }
+  .price-card.highlight{
+    border-color:var(--crimson-dim);
+    background:linear-gradient(180deg, rgba(200,16,46,0.06), var(--panel));
+  }
+  .price-card.gold-tier{
+    border-color:var(--gold-dim);
+    background:linear-gradient(180deg, rgba(201,162,75,0.08), var(--panel));
+  }
+  .price-card.gold-tier .ptier{color:var(--gold);}
+  .price-card.gold-tier li::before{color:var(--gold);}
+  .btn-gold{
+    background:var(--gold);color:var(--ink);
+    padding:15px 28px;font-weight:600;font-size:14px;
+    text-transform:uppercase;letter-spacing:0.04em;
+    border-radius:2px;display:inline-block;
+    transition:background 0.15s ease,transform 0.15s ease;
+  }
+  .btn-gold:hover{background:#DAB55E;transform:translateY(-1px);}
+  .pricing-tabs{
+    display:inline-flex;border:1px solid var(--line);border-radius:3px;overflow:hidden;margin-bottom:40px;
+  }
+  .pricing-tabs button{
+    background:transparent;border:none;color:var(--bone-dim);
+    font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;
+    padding:10px 20px;cursor:pointer;letter-spacing:0.05em;text-transform:uppercase;
+    transition:background 0.15s ease,color 0.15s ease;
+  }
+  .pricing-tabs button.active{background:var(--gold);color:var(--ink);}
+  .pricing-panel{display:none;}
+  .pricing-panel.active{display:grid;}
+
+  /* STORE BADGES */
+  .store-badges{display:flex;gap:14px;flex-wrap:wrap;}
+  .store-badge{
+    display:inline-flex;align-items:center;gap:10px;
+    border:1px solid var(--line);
+    padding:11px 20px;border-radius:4px;
+    transition:border-color 0.15s ease,background 0.15s ease;
+  }
+  .store-badge:hover{border-color:var(--gold-dim);background:var(--panel);}
+  .store-badge svg{width:22px;height:22px;flex-shrink:0;}
+  .store-badge .badge-text{display:flex;flex-direction:column;line-height:1.2;}
+  .store-badge .badge-text small{font-size:10px;color:var(--bone-dim);text-transform:uppercase;letter-spacing:0.04em;}
+  .store-badge .badge-text strong{font-size:15px;font-family:'Oswald',sans-serif;text-transform:none;letter-spacing:0;}
+  .price-card .ptier{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.08em;color:var(--bone-dim);text-transform:uppercase;margin-bottom:18px;}
+  .price-card.highlight .ptier{color:var(--crimson);}
+  .price-card .pamount{font-family:'Oswald',sans-serif;font-size:42px;font-weight:700;margin-bottom:6px;}
+  .price-card .pamount span{font-size:15px;color:var(--bone-dim);font-family:'Inter',sans-serif;font-weight:400;}
+  .price-card .pdesc{color:var(--bone-dim);font-size:14px;margin-bottom:28px;}
+  .price-card ul{list-style:none;margin-bottom:32px;}
+  .price-card li{
+    font-size:14px;color:var(--bone);padding:9px 0;
+    border-top:1px solid var(--line);
+    display:flex;gap:10px;
+  }
+  .price-card li:first-child{border-top:none;}
+  .price-card li::before{content:"—";color:var(--crimson);}
+  .price-card .btn-ghost,.price-card .btn-primary{display:block;text-align:center;width:100%;}
+
+  /* CTA / FOOTER */
+  .cta-band{
+    text-align:center;padding:120px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .cta-band h2{font-size:clamp(30px,5vw,48px);margin-bottom:20px;}
+  .cta-band p{color:var(--bone-dim);max-width:480px;margin:0 auto 36px;font-size:16px;}
+
+  footer{padding:48px 0;}
+  footer .wrap{
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;
+  }
+  footer .foot-links{display:flex;gap:24px;font-size:13px;color:var(--bone-dim);}
+  footer .foot-links a:hover{color:var(--bone);}
+  footer .copyright{font-size:12px;color:var(--bone-dim);font-family:'JetBrains Mono',monospace;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important;transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a href="#" class="logo"><img src="assets/logo_combatcut.png" alt="CombatCut" class="logo-img"></a>
+    <div class="nav-links">
+      <a href="#protocol">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+    </div>
+    <a href="#download" class="nav-cta">Get the app</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow mono">BUILT FOR FIGHT WEEK</div>
+      <h1 class="hero-title">Make weight.<br>Every time. <em>No guesswork.</em></h1>
+      <p class="hero-sub">CombatCut is the weight-cut planner built specifically for boxers, MMA fighters, wrestlers, and grapplers. Set your fight date, get a day-by-day cut plan, and walk onto the scale knowing your number.</p>
+      <form class="waitlist-form" id="waitlistForm" action="https://formspree.io/f/mdarnvnl" method="POST">
+        <input type="email" name="email" id="waitlistEmail" placeholder="your@email.com" required>
+        <input type="hidden" name="_subject" value="New CombatCut waitlist signup">
+        <button type="submit">Join the waitlist</button>
+      </form>
+      <div class="waitlist-msg" id="waitlistMsg">Be first to know when CombatCut lands on iOS & Android.</div>
+
+      <!-- STORE-LINKS-PLACEHOLDER: update href values once your listings are live -->
+      <div class="store-badges" style="margin-top:24px;">
+        <a href="#" class="store-badge" id="appStoreLinkHero">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 12.04c-.02-2.11 1.72-3.13 1.8-3.18-.98-1.43-2.5-1.63-3.04-1.65-1.29-.13-2.51.75-3.16.75-.66 0-1.67-.73-2.74-.71-1.41.02-2.71.82-3.43 2.08-1.46 2.54-.38 6.29 1.04 8.35.69 1 1.5 2.13 2.57 2.09 1.03-.04 1.42-.67 2.67-.67 1.24 0 1.6.67 2.69.65 1.11-.02 1.82-1 2.5-2 .79-1.14 1.11-2.26 1.13-2.31-.02-.01-2.17-.83-2.03-3.4zM14.91 5.6c.57-.69.96-1.65.85-2.6-.82.03-1.81.55-2.4 1.23-.53.6-.99 1.58-.86 2.5.91.07 1.84-.46 2.41-1.13z"/></svg>
+          <span class="badge-text"><small>Download on the</small><strong>App Store</strong></span>
+        </a>
+        <a href="#" class="store-badge" id="playStoreLinkHero">
+          <svg viewBox="0 0 24 24"><path fill="#00C2FF" d="M3.6 2.6c-.3.3-.5.7-.5 1.2v16.4c0 .5.2.9.5 1.2l.1.1 9.2-9.2v-.2L3.7 2.5l-.1.1z"/><path fill="#FFD400" d="M16 12.8l-3.1-3.1.1-.1L16 12.8z"/><path fill="#FF3D00" d="M12.9 9.6l3.1-3.1 7.6 4.3c.6.4.6 1.2 0 1.6l-7.6 4.3-3.1-3.1z"/><path fill="#00F076" d="M12.9 16l3.1-3.2 7.6 4.3c.6.4.6 1.2 0 1.6L16 22.9 12.9 16z"/></svg>
+          <span class="badge-text"><small>Get it on</small><strong>Google Play</strong></span>
+        </a>
+      </div>
+    </div>
+
+    <div class="scale-card">
+      <div class="scale-label">
+        <span>WEIGH-IN READOUT</span>
+        <span class="live">● LIVE</span>
+      </div>
+      <div class="scale-readout"><span id="scaleNum">154.0</span><span class="unit" id="scaleUnit">LBS</span></div>
+      <div class="scale-target">Target: <strong id="targetWeightText">135.0 lbs</strong> · Class: <strong>Lightweight</strong></div>
+      <div style="margin-bottom:20px;">
+        <div class="unit-toggle">
+          <button id="unitLbs" class="active" onclick="setUnit('lbs')">LBS</button>
+          <button id="unitKg" onclick="setUnit('kg')">KG</button>
+        </div>
+      </div>
+      <div class="scale-bar-track"><div class="scale-bar-fill" id="barFill"></div></div>
+      <div class="scale-meta">
+        <span>DAY 1 OF CUT</span>
+        <span id="lbsToGo">19.0 LBS TO GO</span>
+      </div>
+      <div class="scale-countdown">
+        <span class="label">Time to weigh-in</span>
+        <span class="days" id="countdownDays">6d 14h</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="trust">
+  <div class="wrap">
+    <span>BOXING</span>
+    <span>MMA</span>
+    <span>WRESTLING</span>
+    <span>BJJ</span>
+    <span>MUAY THAI</span>
+    <span>JUDO</span>
+  </div>
+</div>
+
+<section id="protocol">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow mono">THE PROTOCOL</div>
+      <h2>Your fight week, mapped out</h2>
+      <p>CombatCut builds a personalized day-by-day plan from the moment you set your fight date — so you're never guessing what today's number should be.</p>
+    </div>
+    <div class="protocol">
+      <div class="protocol-row">
+        <div class="protocol-num">01</div>
+        <div class="protocol-day">7 days out<span>Baseline</span></div>
+        <div class="protocol-desc">Log your starting weight and confirm your target class. CombatCut calculates the total cut needed and builds your daily targets backward from weigh-in.</div>
+      </div>
+      <div class="protocol-row">
+        <div class="protocol-num">02</div>
+        <div class="protocol-day">6–3 days out<span>Water & sodium</span></div>
+        <div class="protocol-desc">Gradual water loading and sodium adjustments, tracked daily. The app flags if you're ahead or behind plan so you can adjust before it becomes a problem.</div>
+      </div>
+      <div class="protocol-row">
+        <div class="protocol-num">03</div>
+        <div class="protocol-day">2 days out<span>Depletion</span></div>
+        <div class="protocol-desc">Carb and water taper begins. Your readout updates in real time as you log each check-in, with a clear lbs-to-go counter.</div>
+      </div>
+      <div class="protocol-row">
+        <div class="protocol-num">04</div>
+        <div class="protocol-day">Weigh-in day<span>Final cut & rehydration</span></div>
+        <div class="protocol-desc">Step on the scale knowing your number. The moment you're cleared, CombatCut switches to your rehydration and refeed plan for fight time.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow mono">WHAT'S INSIDE</div>
+      <h2>Everything fight week needs. Nothing it doesn't.</h2>
+    </div>
+    <div class="features">
+      <div class="feature">
+        <span class="ftag mono">TRACKING</span>
+        <h3>Daily weigh-in log</h3>
+        <p>Log weight, water, and sodium in seconds. See exactly where you stand against plan, every single day.</p>
+      </div>
+      <div class="feature">
+        <span class="ftag mono">PLANNING</span>
+        <h3>Personalized cut timeline</h3>
+        <p>Set your fight date and current weight — get a full plan built around your specific cut, not a generic chart.</p>
+      </div>
+      <div class="feature">
+        <span class="ftag mono">RECOVERY</span>
+        <h3>Rehydration protocol</h3>
+        <p>The window after weigh-in matters as much as the cut itself. Get a clear refeed and rehydration plan for fight time.</p>
+      </div>
+      <div class="feature">
+        <span class="ftag mono">COACHING</span>
+        <h3>Team dashboard</h3>
+        <p>Coaches can track multiple athletes' cuts from one place, with alerts if anyone falls off plan.</p>
+      </div>
+      <div class="feature">
+        <span class="ftag mono">HISTORY</span>
+        <h3>Cut history</h3>
+        <p>Every camp logged. Look back at past cuts to see what worked and refine your approach over time.</p>
+      </div>
+      <div class="feature">
+        <span class="ftag mono">SAFETY</span>
+        <h3>Built-in guardrails</h3>
+        <p>Plain-language guidance at every step, with clear flags if a cut is moving faster than is generally considered safe.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow mono">PRICING</div>
+      <h2>Plans for athletes and coaches</h2>
+      <p>One fighter cutting weight, or a whole team — CombatCut scales with you.</p>
+    </div>
+
+    <div class="pricing-tabs">
+      <button id="tabAthlete" class="active" onclick="setPricingTab('athlete')">Athletes</button>
+      <button id="tabCoach" onclick="setPricingTab('coach')">Coaches</button>
+    </div>
+
+    <div class="pricing-grid pricing-panel active" id="panelAthlete">
+      <div class="price-card">
+        <div class="ptier mono">FREE</div>
+        <div class="pamount">£0</div>
+        <div class="pdesc">For anyone who needs the basics on weigh-in day.</div>
+        <ul>
+          <li>Single-fight weight tracker</li>
+          <li>Basic cut calculator</li>
+          <li>Weigh-in countdown</li>
+        </ul>
+        <a href="#download" class="btn-ghost">Get started</a>
+      </div>
+      <div class="price-card highlight">
+        <div class="ptier mono">INDIVIDUAL ATHLETE</div>
+        <div class="pamount">£4.99<span>/month</span></div>
+        <div class="pdesc">Or £39.99/year. Full fight camp planning, every camp, every cut.</div>
+        <ul>
+          <li>Personalized day-by-day cut plan</li>
+          <li>Rehydration & refeed protocol</li>
+          <li>Unlimited cut history</li>
+          <li>lbs / kg toggle</li>
+        </ul>
+        <a href="#download" class="btn-primary">Start free trial</a>
+      </div>
+    </div>
+
+    <div class="pricing-grid pricing-panel" id="panelCoach">
+      <div class="price-card gold-tier">
+        <div class="ptier mono">UP TO 10 ATHLETES</div>
+        <div class="pamount">£29.99<span>/month</span></div>
+        <div class="pdesc">Or £179.99/year. For coaches and small gyms.</div>
+        <ul>
+          <li>Team dashboard, up to 10 athletes</li>
+          <li>Per-athlete cut plans & alerts</li>
+          <li>Rehydration & refeed protocols</li>
+          <li>Cut history across all athletes</li>
+        </ul>
+        <a href="#download" class="btn-gold">Start free trial</a>
+      </div>
+      <div class="price-card gold-tier">
+        <div class="ptier mono">UP TO 20 ATHLETES</div>
+        <div class="pamount">£39.99<span>/month</span></div>
+        <div class="pdesc">Or £229.99/year. For larger gyms and squads.</div>
+        <ul>
+          <li>Team dashboard, up to 20 athletes</li>
+          <li>Per-athlete cut plans & alerts</li>
+          <li>Rehydration & refeed protocols</li>
+          <li>Cut history across all athletes</li>
+        </ul>
+        <a href="#download" class="btn-gold">Start free trial</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="cta-band" id="download">
+  <div class="wrap">
+    <div class="eyebrow mono" style="margin-bottom:24px;">READY FOR FIGHT WEEK</div>
+    <h2>Get CombatCut</h2>
+    <p>Built by fighters who've made the cut. Join the waitlist now — we'll email you the moment it's live on iOS and Android.</p>
+    <form class="waitlist-form" id="waitlistForm2" action="https://formspree.io/f/mdarnvnl" method="POST" style="max-width:420px;margin:0 auto 14px;">
+      <input type="email" name="email" id="waitlistEmail2" placeholder="your@email.com" required>
+      <input type="hidden" name="_subject" value="New CombatCut waitlist signup">
+      <button type="submit">Join the waitlist</button>
+    </form>
+    <div class="waitlist-msg" id="waitlistMsg2" style="text-align:center;">No spam. One email when we launch.</div>
+
+    <!-- STORE-LINKS-PLACEHOLDER: replace href values once your App Store / Play Store listings are live -->
+    <div id="storeLinks" style="margin-top:28px;">
+      <div class="store-badges" style="justify-content:center;">
+        <a href="#" class="store-badge" id="appStoreLink">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 12.04c-.02-2.11 1.72-3.13 1.8-3.18-.98-1.43-2.5-1.63-3.04-1.65-1.29-.13-2.51.75-3.16.75-.66 0-1.67-.73-2.74-.71-1.41.02-2.71.82-3.43 2.08-1.46 2.54-.38 6.29 1.04 8.35.69 1 1.5 2.13 2.57 2.09 1.03-.04 1.42-.67 2.67-.67 1.24 0 1.6.67 2.69.65 1.11-.02 1.82-1 2.5-2 .79-1.14 1.11-2.26 1.13-2.31-.02-.01-2.17-.83-2.03-3.4zM14.91 5.6c.57-.69.96-1.65.85-2.6-.82.03-1.81.55-2.4 1.23-.53.6-.99 1.58-.86 2.5.91.07 1.84-.46 2.41-1.13z"/></svg>
+          <span class="badge-text"><small>Download on the</small><strong>App Store</strong></span>
+        </a>
+        <a href="#" class="store-badge" id="playStoreLink">
+          <svg viewBox="0 0 24 24"><path fill="#00C2FF" d="M3.6 2.6c-.3.3-.5.7-.5 1.2v16.4c0 .5.2.9.5 1.2l.1.1 9.2-9.2v-.2L3.7 2.5l-.1.1z"/><path fill="#FFD400" d="M16 12.8l-3.1-3.1.1-.1L16 12.8z"/><path fill="#FF3D00" d="M12.9 9.6l3.1-3.1 7.6 4.3c.6.4.6 1.2 0 1.6l-7.6 4.3-3.1-3.1z"/><path fill="#00F076" d="M12.9 16l3.1-3.2 7.6 4.3c.6.4.6 1.2 0 1.6L16 22.9 12.9 16z"/></svg>
+          <span class="badge-text"><small>Get it on</small><strong>Google Play</strong></span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <img src="assets/logo_combatcut.png" alt="CombatCut" class="logo-img">
+    <div class="foot-links">
+      <a href="legal/privacy-policy.html">Privacy Policy</a>
+      <a href="legal/terms.html">Terms</a>
+      <a href="mailto:combatcut2026@gmail.com">Support</a>
+    </div>
+    <div class="copyright mono">© 2026 COMBATCUT. NOT MEDICAL ADVICE.</div>
+  </div>
+</footer>
+
+<script>
+  // Weight data in lbs (source of truth), converted to kg on toggle
+  const weightData = { start: 154.0, target: 135.0, display: 142.6 };
+  let currentUnit = 'lbs';
+  const LB_TO_KG = 0.453592;
+
+  function conv(lbs){ return currentUnit === 'kg' ? lbs * LB_TO_KG : lbs; }
+  function unitLabel(){ return currentUnit === 'kg' ? 'KG' : 'LBS'; }
+
+  function renderScale(animate){
+    const el = document.getElementById('scaleNum');
+    const fill = document.getElementById('barFill');
+    const lbsToGo = document.getElementById('lbsToGo');
+    const unitEl = document.getElementById('scaleUnit');
+    const targetText = document.getElementById('targetWeightText');
+
+    unitEl.textContent = unitLabel();
+    targetText.textContent = conv(weightData.target).toFixed(1) + ' ' + unitLabel().toLowerCase();
+
+    const startVal = conv(weightData.start);
+    const targetVal = conv(weightData.target);
+    const displayVal = conv(weightData.display);
+
+    if(!animate){
+      el.textContent = displayVal.toFixed(1);
+      const pct = ((startVal - displayVal) / (startVal - targetVal)) * 100;
+      fill.style.width = Math.min(Math.max(pct,0),100) + '%';
+      lbsToGo.textContent = (displayVal - targetVal).toFixed(1) + ' ' + unitLabel() + ' TO GO';
+      return;
+    }
+
+    const duration = 1000;
+    const startTime = performance.now();
+    function ease(t){return 1 - Math.pow(1-t,3);}
+    function tick(now){
+      const elapsed = now - startTime;
+      const t = Math.min(elapsed/duration,1);
+      const eased = ease(t);
+      const val = startVal - (startVal - displayVal) * eased;
+      el.textContent = val.toFixed(1);
+      const pct = ((startVal - val) / (startVal - targetVal)) * 100;
+      fill.style.width = Math.min(Math.max(pct,0),100) + '%';
+      lbsToGo.textContent = (val - targetVal).toFixed(1) + ' ' + unitLabel() + ' TO GO';
+      if(t < 1){requestAnimationFrame(tick);}
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function setUnit(unit){
+    currentUnit = unit;
+    document.getElementById('unitLbs').classList.toggle('active', unit === 'lbs');
+    document.getElementById('unitKg').classList.toggle('active', unit === 'kg');
+    renderScale(false);
+  }
+
+  // Initial animated load
+  renderScale(true);
+
+  // Pricing tabs
+  function setPricingTab(tab){
+    document.getElementById('tabAthlete').classList.toggle('active', tab === 'athlete');
+    document.getElementById('tabCoach').classList.toggle('active', tab === 'coach');
+    document.getElementById('panelAthlete').classList.toggle('active', tab === 'athlete');
+    document.getElementById('panelCoach').classList.toggle('active', tab === 'coach');
+  }
+
+  // Countdown to a sample weigh-in 6 days 14 hours out, ticking down live
+  (function(){
+    const totalMs = (6*24*60*60*1000) + (14*60*60*1000);
+    const start = Date.now();
+    const el = document.getElementById('countdownDays');
+    function update(){
+      const elapsed = Date.now() - start;
+      const remaining = Math.max(totalMs - elapsed, 0);
+      const days = Math.floor(remaining / (24*60*60*1000));
+      const hours = Math.floor((remaining % (24*60*60*1000)) / (60*60*1000));
+      el.textContent = days + 'd ' + hours + 'h';
+    }
+    update();
+    setInterval(update, 60000);
+  })();
+
+  // Waitlist form handling — submits to Formspree
+  function wireWaitlistForm(formId, emailId, msgId){
+    const form = document.getElementById(formId);
+    const emailInput = document.getElementById(emailId);
+    const msg = document.getElementById(msgId);
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      const email = emailInput.value.trim();
+      if(!email) return;
+
+      const btn = form.querySelector('button');
+      const originalText = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'Joining…';
+
+      fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      })
+      .then(response => {
+        if(response.ok){
+          msg.textContent = "You're on the list. We'll email you at launch.";
+          msg.classList.add('success');
+          emailInput.value = '';
+          emailInput.disabled = true;
+          btn.textContent = 'Added ✓';
+        } else {
+          throw new Error('Submission failed');
+        }
+      })
+      .catch(() => {
+        msg.textContent = "Something went wrong — please try again.";
+        btn.disabled = false;
+        btn.textContent = originalText;
+      });
+    });
+  }
+  wireWaitlistForm('waitlistForm','waitlistEmail','waitlistMsg');
+  wireWaitlistForm('waitlistForm2','waitlistEmail2','waitlistMsg2');
+
+  // Once your App Store / Play Store listings are live, set these href values:
+  // document.getElementById('appStoreLinkHero').href = 'https://apps.apple.com/app/idXXXXXXXXX';
+  // document.getElementById('playStoreLinkHero').href = 'https://play.google.com/store/apps/details?id=com.yourcompany.combatcut';
+  // document.getElementById('appStoreLink').href = 'https://apps.apple.com/app/idXXXXXXXXX';
+  // document.getElementById('playStoreLink').href = 'https://play.google.com/store/apps/details?id=com.yourcompany.combatcut';
+</script>
+
+</body>
+</html>
