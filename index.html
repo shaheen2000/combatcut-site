@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -65,7 +66,12 @@
     text-transform:uppercase;letter-spacing:0.04em;
     border-radius:2px;
   }
-  @media (max-width:720px){.nav-links{display:none;}}
+  @media (max-width:720px){
+    .nav-links{display:none;}
+    .nav-cta{padding:8px 14px;font-size:12px;}
+    nav .wrap{height:58px;}
+    .logo-img{height:28px;}
+  }
 
   /* HERO */
   header.hero{
@@ -73,6 +79,9 @@
     padding:160px 0 100px;
     border-bottom:1px solid var(--line);
     overflow:hidden;
+  }
+  @media (max-width:720px){
+    header.hero{padding:100px 0 64px;}
   }
   header.hero::before{
     content:"";
@@ -119,6 +128,9 @@
     font-size:18px;line-height:1.6;color:var(--bone-dim);
     max-width:480px;margin-bottom:36px;
   }
+  @media (max-width:720px){
+    .hero-sub{font-size:16px;}
+  }
   .hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:20px;}
   .btn-primary{
     background:var(--crimson);color:var(--bone);
@@ -142,6 +154,11 @@
   /* WAITLIST FORM */
   .waitlist-form{
     display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;
+  }
+  @media (max-width:520px){
+    .waitlist-form{flex-direction:column;}
+    .waitlist-form input[type="email"]{min-width:unset;width:100%;}
+    .waitlist-form button{width:100%;padding:16px;}
   }
   .waitlist-form input[type="email"]{
     flex:1;min-width:200px;
@@ -178,6 +195,9 @@
     border-radius:6px;
     padding:32px;
     position:relative;
+  }
+  @media (max-width:720px){
+    .scale-card{padding:20px;}
   }
   .scale-card .scale-label{
     font-family:'JetBrains Mono',monospace;
@@ -247,6 +267,12 @@
   .section-head .eyebrow{margin-bottom:18px;}
   .section-head h2{font-size:clamp(28px,4vw,40px);line-height:1.1;font-weight:700;}
   .section-head p{color:var(--bone-dim);font-size:16px;margin-top:16px;line-height:1.6;}
+  @media (max-width:720px){
+    section{padding:64px 0;}
+    .section-head{margin-bottom:36px;}
+    .section-head p{font-size:15px;}
+    .wrap{padding:0 20px;}
+  }
 
   /* PROTOCOL TIMELINE (real sequence -> numbered markers justified) */
   .protocol{
@@ -270,8 +296,16 @@
   .protocol-day span{display:block;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--bone-dim);font-weight:500;text-transform:none;margin-top:4px;}
   .protocol-desc{color:var(--bone-dim);font-size:15px;line-height:1.6;}
   @media (max-width:720px){
-    .protocol-row{grid-template-columns:50px 1fr;}
-    .protocol-row .protocol-desc{grid-column:2;}
+    .protocol-row{
+      grid-template-columns:40px 1fr;
+      gap:16px;
+      padding:24px 0;
+    }
+    .protocol-row .protocol-desc{
+      grid-column:2;
+      font-size:14px;
+    }
+    .protocol-day{font-size:16px;}
   }
 
   /* FEATURES GRID */
@@ -290,10 +324,20 @@
   .feature h3{font-size:19px;font-weight:600;margin-bottom:10px;text-transform:none;letter-spacing:0;}
   .feature p{color:var(--bone-dim);font-size:14px;line-height:1.6;}
   @media (max-width:880px){.features{grid-template-columns:1fr;}}
+  @media (max-width:720px){
+    .feature{padding:24px 20px;}
+    .feature h3{font-size:17px;}
+  }
 
   /* PRICING */
   .pricing-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
-  @media (max-width:720px){.pricing-grid{grid-template-columns:1fr;}}
+  @media (max-width:720px){
+    .pricing-grid{grid-template-columns:1fr;}
+    .price-card{padding:24px 20px;}
+    .price-card .pamount{font-size:34px;}
+    .pricing-tabs{display:flex;width:100%;}
+    .pricing-tabs button{flex:1;text-align:center;}
+  }
   .price-card{
     border:1px solid var(--line);border-radius:6px;padding:36px;
     background:var(--panel);
@@ -331,6 +375,11 @@
 
   /* STORE BADGES */
   .store-badges{display:flex;gap:14px;flex-wrap:wrap;}
+  @media (max-width:520px){
+    .store-badges{flex-direction:column;}
+    .store-badge{justify-content:center;padding:14px 24px;}
+    .store-badge .badge-text strong{font-size:17px;}
+  }
   .store-badge{
     display:inline-flex;align-items:center;gap:10px;
     border:1px solid var(--line);
@@ -364,6 +413,10 @@
   }
   .cta-band h2{font-size:clamp(30px,5vw,48px);margin-bottom:20px;}
   .cta-band p{color:var(--bone-dim);max-width:480px;margin:0 auto 36px;font-size:16px;}
+  @media (max-width:720px){
+    .cta-band{padding:72px 0;}
+    .cta-band p{font-size:15px;padding:0 8px;}
+  }
 
   footer{padding:48px 0;}
   footer .wrap{
@@ -372,9 +425,36 @@
   footer .foot-links{display:flex;gap:24px;font-size:13px;color:var(--bone-dim);}
   footer .foot-links a:hover{color:var(--bone);}
   footer .copyright{font-size:12px;color:var(--bone-dim);font-family:'JetBrains Mono',monospace;}
+  @media (max-width:720px){
+    footer .wrap{flex-direction:column;align-items:flex-start;gap:20px;padding-bottom:32px;}
+    footer .foot-links{gap:18px;flex-wrap:wrap;}
+    footer .copyright{font-size:11px;}
+    footer .logo-img{height:26px;}
+  }
 
   @media (prefers-reduced-motion: reduce){
     *{animation:none !important;transition:none !important;}
+  }
+
+  /* MOBILE TOUCH TARGETS — ensure all interactive elements meet 44px minimum */
+  @media (max-width:720px){
+    .btn-primary,.btn-ghost,.btn-gold{
+      min-height:48px;display:flex;align-items:center;justify-content:center;
+      width:100%;text-align:center;
+    }
+    .hero-actions{flex-direction:column;}
+    .nav-cta{min-height:36px;}
+    .unit-toggle button{padding:8px 16px;min-height:36px;}
+    .price-card .btn-ghost,
+    .price-card .btn-primary,
+    .price-card .btn-gold{
+      min-height:48px;display:flex;align-items:center;justify-content:center;
+    }
+    /* Prevent text from being too small to read on mobile */
+    .scale-meta{font-size:11px;}
+    .trust .wrap{gap:20px;font-size:12px;}
+    /* Ensure the eyebrow label wraps gracefully */
+    .eyebrow{white-space:normal;text-align:center;}
   }
 </style>
 </head>
@@ -387,6 +467,7 @@
       <a href="#protocol">How it works</a>
       <a href="#features">Features</a>
       <a href="#pricing">Pricing</a>
+      <a href="#demo" style="color:var(--gold);">Try Demo</a>
     </div>
     <a href="#download" class="nav-cta">Get the app</a>
   </div>
@@ -404,6 +485,13 @@
         <button type="submit">Join the waitlist</button>
       </form>
       <div class="waitlist-msg" id="waitlistMsg">Be first to know when CombatCut lands on iOS & Android.</div>
+
+      <div style="margin-top:20px;">
+        <a href="https://weight-war-peak.base44.app" target="_blank" rel="noopener" class="btn-ghost" style="display:inline-flex;align-items:center;gap:10px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Try the Demo App
+        </a>
+      </div>
 
       <!-- STORE-LINKS-PLACEHOLDER: update href values once your listings are live -->
       <div class="store-badges" style="margin-top:24px;">
@@ -596,7 +684,30 @@
   </div>
 </section>
 
-<div class="cta-band" id="download">
+<section id="demo" style="text-align:center;">
+  <div class="wrap">
+    <div class="eyebrow mono" style="margin:0 auto 24px;">LIVE DEMO</div>
+    <h2 style="font-size:clamp(26px,4vw,38px);margin-bottom:16px;">Try CombatCut right now</h2>
+    <p style="color:var(--bone-dim);max-width:480px;margin:0 auto 36px;font-size:16px;">
+      The full app is live and working — no download needed. Open it in your browser or scan the QR code at the gym.
+    </p>
+    <div style="display:flex;gap:48px;align-items:center;justify-content:center;flex-wrap:wrap;">
+      <div>
+        <a href="https://weight-war-peak.base44.app" target="_blank" rel="noopener" class="btn-primary" style="display:inline-flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Open the Demo App
+        </a>
+        <div style="font-size:13px;color:var(--bone-dim);">Opens in your browser — no install needed</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="background:var(--panel);border:1px solid var(--gold-dim);border-radius:8px;padding:16px;display:inline-block;margin-bottom:10px;">
+          <img src="combatcut-qr.png" alt="Scan to try CombatCut" style="width:140px;height:140px;display:block;">
+        </div>
+        <div style="font-size:13px;color:var(--bone-dim);font-family:'JetBrains Mono',monospace;">SCAN AT THE GYM</div>
+      </div>
+    </div>
+  </div>
+</section>
   <div class="wrap">
     <div class="eyebrow mono" style="margin-bottom:24px;">READY FOR FIGHT WEEK</div>
     <h2>Get CombatCut</h2>
@@ -768,3 +879,4 @@
 
 </body>
 </html>
+
